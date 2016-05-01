@@ -1,0 +1,17 @@
+PODS:
+  - Kiwi (2.4.0)
+  - WatchDogs (0.1.0)
+
+DEPENDENCIES:
+  - Kiwi
+  - WatchDogs (from `../`)
+
+EXTERNAL SOURCES:
+  WatchDogs:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Kiwi: f49c9d54b28917df5928fe44968a39ed198cb8a8
+  WatchDogs: c67653115dded6390bb2132aa6c9339239b7c126
+
+COCOAPODS: 0.39.0

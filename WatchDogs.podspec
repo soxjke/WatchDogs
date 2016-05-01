@@ -1,42 +1,21 @@
-#
-# Be sure to run `pod lib lint WatchDogs.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = "WatchDogs"
   s.version          = "0.1.0"
-  s.summary          = "A short description of WatchDogs."
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.summary          = "Run-time helpers to avoid API misusages"
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+CoreData threading issues, long-running operations on a main-thread,
+all the different kinds of monitoring might be needed to warn about issues
+appearing while app debugging.
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/WatchDogs"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
+  s.homepage         = "https://github.com/soxjke/WatchDogs"
   s.license          = 'MIT'
   s.author           = { "Petro Korienev" => "soxjke@gmail.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/WatchDogs.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => "https://github.com/soxjke/WatchDogs.git", :tag => s.version.to_s }
+  s.social_media_url = 'https://twitter.com/soxjke'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '7.0'
 
   s.source_files = 'WatchDogs/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'WatchDogs' => ['WatchDogs/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end
