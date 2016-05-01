@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'WatchDogs_Example', :exclusive => true do
+  pod 'WatchDogs', :path => '../'
+end
+
+target 'WatchDogs_Tests', :exclusive => true do
+  pod 'WatchDogs', :path => '../'
+
+  pod 'Kiwi'
+end
