@@ -1,8 +1,8 @@
 //
-//  WDCoreDataWatchdog.h
+//  WDConstants.h
 //  WatchDogs
 //
-//  Created by Petro Korienev on 5/1/16.
+//  Created by Petro Korienev on 5/6/16.
 //  Copyright (c) 2016 Petro Korienev <soxjke@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,20 +25,31 @@
 
 #ifdef DEBUG
 
-#import "WDIncludes.h"
-#import "WDWatchdog.h"
+typedef struct {
+    NSString __unsafe_unretained *watchdogs;
+    NSString __unsafe_unretained *coreData;
+} WDErrorDomainStruct;
 
-typedef NS_OPTIONS(NSUInteger, WDCoreDataWatchdogMonitorOptions) {
-    WDCoreDataWatchdogMonitorOptionsContexts = 1 << 0,
-    WDCoreDataWatchdogMonitorOptionsObjects = 1 << 1,
-    WDCoreDataWatchdogMonitorOptionsCoordinators = 1 << 2,
-    WDCoreDataWatchdogMonitorOptionsDefault = ~0x1
-};
+extern WDErrorDomainStruct const WDErrorDomain;
 
-@interface WDCoreDataWatchdog : WDWatchdog
+typedef struct {
+    NSInteger general;
+} WDErrorCodesWatchdogsStruct;
 
-@property (nonatomic, assign) WDCoreDataWatchdogMonitorOptions options;
+extern WDErrorCodesWatchdogsStruct const WDErrorCodesWatchdogs;
 
-@end
+typedef struct {
+    NSInteger unwrappedSave;
+    NSInteger unwrappedGetter;
+    NSInteger unwrappedSetter;
+} WDErrorCodesCoreDataStruct;
+
+extern WDErrorCodesCoreDataStruct const WDErrorCodesCoreData;
+extern NSString *mapCoreDataErrorCodeToDescription(NSInteger errorCode);
+
+extern NSString * const WDErrorStackTraceUserInfoKey;
+extern NSString * const WDErrorThreadNameUserInfoKey;
+extern NSString * const WDErrorObjectUserInfoKey;
+extern NSString * const WDErrorMethodUserInfoKey;
 
 #endif

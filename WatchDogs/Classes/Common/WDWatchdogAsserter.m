@@ -1,8 +1,8 @@
 //
-//  WDCoreDataWatchdog.h
+//  WDWatchdogAsserter.m
 //  WatchDogs
 //
-//  Created by Petro Korienev on 5/1/16.
+//  Created by Petro Korienev on 5/6/16.
 //  Copyright (c) 2016 Petro Korienev <soxjke@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,19 +25,13 @@
 
 #ifdef DEBUG
 
-#import "WDIncludes.h"
-#import "WDWatchdog.h"
+#import "WDWatchdogAsserter.h"
 
-typedef NS_OPTIONS(NSUInteger, WDCoreDataWatchdogMonitorOptions) {
-    WDCoreDataWatchdogMonitorOptionsContexts = 1 << 0,
-    WDCoreDataWatchdogMonitorOptionsObjects = 1 << 1,
-    WDCoreDataWatchdogMonitorOptionsCoordinators = 1 << 2,
-    WDCoreDataWatchdogMonitorOptionsDefault = ~0x1
-};
+@implementation WDWatchdogAsserter
 
-@interface WDCoreDataWatchdog : WDWatchdog
-
-@property (nonatomic, assign) WDCoreDataWatchdogMonitorOptions options;
+- (void)assertWithError:(NSError *)error {
+    NSAssert(NO, @"Monitored code has faced an error:\n %@", error);
+}
 
 @end
 

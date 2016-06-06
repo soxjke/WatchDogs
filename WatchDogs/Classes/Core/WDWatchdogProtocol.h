@@ -1,8 +1,8 @@
 //
-//  WDCoreDataWatchdog.h
+//  WDWatchdogProtocol.h
 //  WatchDogs
 //
-//  Created by Petro Korienev on 5/1/16.
+//  Created by Petro Korienev on 5/6/16.
 //  Copyright (c) 2016 Petro Korienev <soxjke@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,18 +26,22 @@
 #ifdef DEBUG
 
 #import "WDIncludes.h"
-#import "WDWatchdog.h"
 
-typedef NS_OPTIONS(NSUInteger, WDCoreDataWatchdogMonitorOptions) {
-    WDCoreDataWatchdogMonitorOptionsContexts = 1 << 0,
-    WDCoreDataWatchdogMonitorOptionsObjects = 1 << 1,
-    WDCoreDataWatchdogMonitorOptionsCoordinators = 1 << 2,
-    WDCoreDataWatchdogMonitorOptionsDefault = ~0x1
-};
+@protocol WDWatchdogReporterProtocol;
+@protocol WDWatchdogAsserterProtocol;
 
-@interface WDCoreDataWatchdog : WDWatchdog
+@protocol WDWatchdogProtocol <NSObject>
 
-@property (nonatomic, assign) WDCoreDataWatchdogMonitorOptions options;
+@property (nonatomic, strong, readonly) id <WDWatchdogReporterProtocol> reporter;
+@property (nonatomic, strong, readonly) id <WDWatchdogAsserterProtocol> asserter;
+
+- (void)setup;
+- (void)raiseErrorCode:(NSInteger)code
+             forObject:(id)object
+                method:(SEL)method;
+
+- (NSString *)errorDomain;
+- (NSString *)descriptionForErrorCode:(NSInteger)code;
 
 @end
 

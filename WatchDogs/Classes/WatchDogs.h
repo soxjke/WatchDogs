@@ -1,8 +1,8 @@
 //
-//  WDCoreDataWatchdog.h
+//  WatchDogs.h
 //  WatchDogs
 //
-//  Created by Petro Korienev on 5/1/16.
+//  Created by Petro Korienev on 5/6/16.
 //  Copyright (c) 2016 Petro Korienev <soxjke@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,22 +23,4 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#ifdef DEBUG
-
-#import "WDIncludes.h"
-#import "WDWatchdog.h"
-
-typedef NS_OPTIONS(NSUInteger, WDCoreDataWatchdogMonitorOptions) {
-    WDCoreDataWatchdogMonitorOptionsContexts = 1 << 0,
-    WDCoreDataWatchdogMonitorOptionsObjects = 1 << 1,
-    WDCoreDataWatchdogMonitorOptionsCoordinators = 1 << 2,
-    WDCoreDataWatchdogMonitorOptionsDefault = ~0x1
-};
-
-@interface WDCoreDataWatchdog : WDWatchdog
-
-@property (nonatomic, assign) WDCoreDataWatchdogMonitorOptions options;
-
-@end
-
-#endif
+#import <WatchDogs/WDWatchdogSystem.h>

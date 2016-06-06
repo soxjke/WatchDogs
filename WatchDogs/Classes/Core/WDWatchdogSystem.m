@@ -1,8 +1,8 @@
 //
-//  WDCoreDataWatchdog.h
+//  WDWatchdogSystem.m
 //  WatchDogs
 //
-//  Created by Petro Korienev on 5/1/16.
+//  Created by Petro Korienev on 5/6/16.
 //  Copyright (c) 2016 Petro Korienev <soxjke@gmail.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,19 +25,27 @@
 
 #ifdef DEBUG
 
-#import "WDIncludes.h"
-#import "WDWatchdog.h"
+#import "WDWatchdogSystem.h"
+#import "WDWatchdogBuilder.h"
+#import "WDWatchdogNSLogReporter.h"
+#import "WDWatchdogAsserter.h"
 
-typedef NS_OPTIONS(NSUInteger, WDCoreDataWatchdogMonitorOptions) {
-    WDCoreDataWatchdogMonitorOptionsContexts = 1 << 0,
-    WDCoreDataWatchdogMonitorOptionsObjects = 1 << 1,
-    WDCoreDataWatchdogMonitorOptionsCoordinators = 1 << 2,
-    WDCoreDataWatchdogMonitorOptionsDefault = ~0x1
-};
+@implementation WDWatchdogSystem
 
-@interface WDCoreDataWatchdog : WDWatchdog
+static BOOL isAsserterEnabledByDefault = NO;
 
-@property (nonatomic, assign) WDCoreDataWatchdogMonitorOptions options;
++ (void)enableDefaultAssertions {
+    isAsserterEnabledByDefault = YES;
+}
+
++ (WDCoreDataWatchdog *)runCoreDataWatchDog {
+    WDCoreDataWatchdog *watchdog = [WDWatchdogBuilder<WDCoreDataWatchdog *> createWatchdogOfClass:[WDCoreDataWatchdog class]
+                                                                                     withReporter:[WDWatchdogNSLogReporter new]
+                                                                                         asserter:isAsserterEnabledByDefault ? [WDWatchdogAsserter new] : nil];
+    watchdog.options = WDCoreDataWatchdogMonitorOptionsDefault;
+    [watchdog setup];
+    return watchdog;
+}
 
 @end
 

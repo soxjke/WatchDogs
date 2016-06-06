@@ -23,26 +23,24 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-#import "WDCoreDataWatchdog.h"
-
 #ifdef DEBUG
 
-WDCoreDataWatchDogOptions wd_options =  WDCoreDataWatchDogOptionsMonitorContexts |
-WDCoreDataWatchDogOptionsMonitorObjects |
-WDCoreDataWatchDogOptionsMonitorCoordinators |
-WDCoreDataWatchDogOptionsReportMisusages;
+#import "WDCoreDataWatchdog.h"
+#import <CoreData/CoreData.h>
+#import <objc/runtime.h>
 
+const char *kWDContextKey = "wd_context";
 
 @implementation WDCoreDataWatchdog
 
 - (void)setup {
-    if (WDCoreDataWatchDogOptionsMonitorContexts & wd_options) {
+    if (WDCoreDataWatchdogMonitorOptionsContexts & self.options) {
         [self setupContextMonitoring];
     }
-    if (WDCoreDataWatchDogOptionsMonitorObjects & wd_options) {
+    if (WDCoreDataWatchdogMonitorOptionsObjects & self.options) {
         [self setupObjectMonitoring];
     }
-    if (WDCoreDataWatchDogOptionsMonitorCoordinators & wd_options) {
+    if (WDCoreDataWatchdogMonitorOptionsCoordinators & self.options) {
         [self setupCoordinatorMonitoring];
     }
 }
@@ -63,19 +61,11 @@ WDCoreDataWatchDogOptionsReportMisusages;
     method_setImplementation(saveMethod, imp_implementationWithBlock(^BOOL(id context, NSError **errorBackPointer) { // SEL is ommited, it's not an error, it's an implementation detail of this runtime functionality
         dispatch_queue_t contextQueue = object_getIvar(context, privateQueueIvar);
         BOOL isAccessCorrect = ((!contextQueue || contextQueue == dispatch_get_main_queue()) && [NSThread isMainThread]) ||
-        (dispatch_get_specific(kDTContextKey) == (__bridge void *)context);
-        if (WDCoreDataWatchDogOptionsAssertMisusages & wd_options) {
-            NSAssert(isAccessCorrect, @"Unwrapped save - CoreData race condition source");
-        }
-        if (WDCoreDataWatchDogOptionsReportMisusages & wd_options) {
-            if (!isAccessCorrect) {
-                NSArray *callStack = [NSThread callStackSymbols];
-                callStack = [callStack subarrayWithRange:NSMakeRange(1, callStack.count - 1)];
-                [self reportWithDescription:@"Unwrapped save - CoreData race condition source"
-                                  forObject:context
-                                     method:@selector(save:)
-                                  callStack:callStack];
-            }
+        (dispatch_get_specific(kWDContextKey) == (__bridge void *)context);
+        if (!isAccessCorrect) {
+            [self raiseErrorCode:WDErrorCodesCoreData.unwrappedSave
+                       forObject:context
+                          method:@selector(save:)];
         }
         return ((BOOL (*)(id, SEL, NSError**))originalSaveImplementation)(context, @selector(save:), errorBackPointer);
     }));
@@ -84,7 +74,7 @@ WDCoreDataWatchDogOptionsReportMisusages;
         context = ((id (*)(id, SEL, NSManagedObjectContextConcurrencyType))originalInitImplementation)(context, @selector(initWithConcurrencyType:), type);
         if (type == NSPrivateQueueConcurrencyType) {
             dispatch_queue_t contextQueue = object_getIvar(context, privateQueueIvar);
-            dispatch_queue_set_specific(contextQueue, kDTContextKey, (__bridge void *)(context), NULL);
+            dispatch_queue_set_specific(contextQueue, kWDContextKey, (__bridge void *)(context), NULL);
         }
         return context;
     }));
@@ -125,19 +115,11 @@ WDCoreDataWatchDogOptionsReportMisusages;
                     id context = ((NSManagedObject *)SELF).managedObjectContext;
                     dispatch_queue_t contextQueue = object_getIvar(context, privateQueueIvar);
                     BOOL isAccessCorrect = ((!contextQueue || contextQueue == dispatch_get_main_queue()) && [NSThread isMainThread]) ||
-                    (dispatch_get_specific(kDTContextKey) == (__bridge void *)context);
-                    if (WDCoreDataWatchDogOptionsAssertMisusages & wd_options) {
-                        NSAssert(isAccessCorrect, @"Unwrapped attribute getter - CoreData race condition source");
-                    }
-                    if (WDCoreDataWatchDogOptionsReportMisusages & wd_options) {
-                        if (!isAccessCorrect) {
-                            NSArray *callStack = [NSThread callStackSymbols];
-                            callStack = [callStack subarrayWithRange:NSMakeRange(2, callStack.count - 2)];
-                            [self reportWithDescription:@"Unwrapped attribute getter - CoreData race condition source"
-                                              forObject:SELF
-                                                 method:callingSelector
-                                              callStack:callStack];
-                        }
+                    (dispatch_get_specific(kWDContextKey) == (__bridge void *)context);
+                    if (!isAccessCorrect) {
+                        [self raiseErrorCode:WDErrorCodesCoreData.unwrappedGetter
+                                   forObject:SELF
+                                      method:callingSelector];
                     }
                 };
                 
@@ -159,19 +141,11 @@ WDCoreDataWatchDogOptionsReportMisusages;
                     id context = ((NSManagedObject *)SELF).managedObjectContext;
                     dispatch_queue_t contextQueue = object_getIvar(context, privateQueueIvar);
                     BOOL isAccessCorrect = ((!contextQueue || contextQueue == dispatch_get_main_queue()) && [NSThread isMainThread]) ||
-                    (dispatch_get_specific(kDTContextKey) == (__bridge void *)context);
-                    if (WDCoreDataWatchDogOptionsAssertMisusages & wd_options) {
-                        NSAssert(isAccessCorrect, @"Unwrapped attribute setter - CoreData race condition source");
-                    }
-                    if (WDCoreDataWatchDogOptionsReportMisusages & wd_options) {
-                        if (!isAccessCorrect) {
-                            NSArray *callStack = [NSThread callStackSymbols];
-                            callStack = [callStack subarrayWithRange:NSMakeRange(1, callStack.count - 1)];
-                            [self reportWithDescription:@"Unwrapped attribute setter - CoreData race condition source"
-                                              forObject:SELF
-                                                 method:selector
-                                              callStack:callStack];
-                        }
+                    (dispatch_get_specific(kWDContextKey) == (__bridge void *)context);
+                    if (!isAccessCorrect) {
+                        [self raiseErrorCode:WDErrorCodesCoreData.unwrappedSetter
+                                   forObject:SELF
+                                      method:selector];
                     }
                     return ((void (*)(id, SEL, id))implementationToHook)(SELF, selector, argument);
                 }));
@@ -188,13 +162,12 @@ WDCoreDataWatchDogOptionsReportMisusages;
     // To be done
 }
 
-- (void)reportWithDescription:(NSString *)description
-                    forObject:(id)object
-                       method:(SEL)method
-                    callStack:(NSArray *)callStack {
-    NSLog(@"%@", description);
-    NSLog(@"Object - %@, selector - %@", object, NSStringFromSelector(method));
-    NSLog(@"%@", callStack);
+- (NSString *)errorDomain {
+    return WDErrorDomain.coreData;
+}
+
+- (NSString *)descriptionForErrorCode:(NSInteger)code {
+    return mapCoreDataErrorCodeToDescription(code);
 }
 
 @end
