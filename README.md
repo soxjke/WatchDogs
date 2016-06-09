@@ -1,9 +1,6 @@
 # WatchDogs
 
-[![CI Status](http://img.shields.io/travis/Petro Korienev/WatchDogs.svg?style=flat)](https://travis-ci.org/Petro Korienev/WatchDogs)
-[![Version](https://img.shields.io/cocoapods/v/WatchDogs.svg?style=flat)](http://cocoapods.org/pods/WatchDogs)
-[![License](https://img.shields.io/cocoapods/l/WatchDogs.svg?style=flat)](http://cocoapods.org/pods/WatchDogs)
-[![Platform](https://img.shields.io/cocoapods/p/WatchDogs.svg?style=flat)](http://cocoapods.org/pods/WatchDogs)
+[[https://github.com/soxjke/WatchDogs/blob/master/watchdog.jpg|alt=Bow-bow]]
 
 ## Example
 
@@ -13,11 +10,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-WatchDogs is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+WatchDogs is under development and not yet available through [CocoaPods master repo](http://cocoapods.org). 
+To install it, simply add the following line to your Podfile:
 
 ```ruby
-pod "WatchDogs"
+pod "WatchDogs", :git=>'https://github.com/soxjke/WatchDogs.git'
 ```
 
 ## Author
