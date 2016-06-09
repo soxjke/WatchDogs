@@ -32,7 +32,7 @@ typedef NS_OPTIONS(NSUInteger, WDCoreDataWatchdogMonitorOptions) {
     WDCoreDataWatchdogMonitorOptionsContexts = 1 << 0,
     WDCoreDataWatchdogMonitorOptionsObjects = 1 << 1,
     WDCoreDataWatchdogMonitorOptionsCoordinators = 1 << 2,
-    WDCoreDataWatchdogMonitorOptionsDefault = ~0x1
+    WDCoreDataWatchdogMonitorOptionsDefault = ~0x0
 };
 
 @interface WDCoreDataWatchdog : WDWatchdog
