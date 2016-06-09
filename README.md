@@ -1,6 +1,6 @@
 # WatchDogs
 
-[[https://github.com/soxjke/WatchDogs/blob/master/watchdog.jpg|alt=Bow-bow]]
+![Bow-bow!](https://github.com/soxjke/WatchDogs/blob/master/watchdog.jpg "Bow-bow!")
 
 ## Example
 
